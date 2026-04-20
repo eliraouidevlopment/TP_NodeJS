@@ -11,7 +11,6 @@ const s = createServer((req, res) => {
 
     if (req.method === "GET" && req.url === "/") {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.write(JSON.stringify(products));
         const reader = fs.createReadStream('./TP3_Http/index.html');
         pipeline(reader, res, err => { if (err) console.error(err); });
     }
@@ -37,8 +36,12 @@ const s = createServer((req, res) => {
             newProduct.id=products.length+1;
             products.push(newProduct);
             res.writeHead(201, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ success: true, name: newProduct.name })); // ✅ retourner le nom
+            res.end(JSON.stringify({ success: true,})); 
         });
+    }
+    else if(req.method=="GET"&& req.url==="/products"){
+        res.writeHead(200,{"Content-Type":"application/json"});
+        res.end(JSON.stringify(products));
     }
     else {
         res.writeHead(404);
@@ -46,6 +49,6 @@ const s = createServer((req, res) => {
     }
 });
 
-s.listen(3000, () => {
+s.listen(3001, () => {
     console.log("Listening on port 3000");
 });

@@ -1,34 +1,67 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <br><br><button onclick="addUser()">Ajouter Producte</button>
-
+    
+    <div style="width: 50%; text-align: center; background-color: red; border-radius: 8px; margin: 10px; padding: 5px;">The products</div>
+        <table border="1">
+            <thead>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Id</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <br><br><button onclick="addProduct()">Ajouter Producte</button>
     <script>
  
-        function addUser() {
+        function addProduct() {
             let nom=window.prompt("entrer votre product ");
-            let prix=prompt("entrer votre prix");
-            if(nom===null || prix===null){
-                console.log(" tu n'a pas ajouter un produit ;chaque proprieter doit est une veleur ");
-            }else{
-                fetch('http://localhost:3000/products', { // ✅ bonne route
+            let prix=Number(prompt("entrer votre prix"));
+            if(nom===null || prix===null) return;
+
+                fetch('http://localhost:3001/products', { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: nom,price:prix }),
-            })
-            setTimeout(()=>{
-                 fetch('http://localhost:3000', { // ✅ bonne route
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-            })
-            },0)
+                })
+            .then(()=> fetch("http://localhost:3001/products"))
              .then(res => res.json())
-            .then(data => document.write('Produit ajouté :  ' + data.name+" avec de prx "+data.price)); 
+             
+             .then(res=> res.json())
+            .then(data => {
+                const tbody=document.querySelector("tbody");
+                tbody.innerHTML="";
+                data.forEach(element => {
+                    tbody.innerHTML+=`<tr>
+                                            <td>${element.name}</td>
+                                            <td>${element.price}</td>
+                                            <td>${element.id}</td>
+                                        </tr>`
+                    
+                });
+
+            }); 
 
             }
-            
+            // Ajouter ceci dans le <script>, en dehors de addProduct()
+function loadProducts() {
+    fetch("http://localhost:3001/products")
+    .then(res => res.json())
+    .then(data => {
+        const tbody = document.querySelector("tbody");
+        tbody.innerHTML = "";
+        data.forEach(element => {
+            tbody.innerHTML += `<tr>
+                <td>${element.name}</td>
+                <td>${element.price}</td>
+                <td>${element.id}</td>
+            </tr>`;
+        });
+    });
+}
 
-        }
+loadProducts(); // appelé dès que la page charge
+            
     </script>
 </body>
 </html>
