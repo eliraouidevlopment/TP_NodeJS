@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <br><br><button onclick="addUser()">Ajouter Producte</button>
+
+    <script>
+ 
+        function addUser() {
+            let nom=window.prompt("entrer votre product ");
+            let prix=prompt("entrer votre prix");
+            if(nom===null || prix===null){
+                console.log(" tu n'a pas ajouter un produit ;chaque proprieter doit est une veleur ");
+            }else{
+                fetch('http://localhost:3000/products', { // ✅ bonne route
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: nom,price:prix }),
+            })
+            setTimeout(()=>{
+                 fetch('http://localhost:3000', { // ✅ bonne route
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            },0)
+             .then(res => res.json())
+            .then(data => document.write('Produit ajouté :  ' + data.name+" avec de prx "+data.price)); 
+
+            }
+            
+
+        }
+    </script>
+</body>
+</html>
